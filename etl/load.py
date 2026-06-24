@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 import pandas as pd
 
 
@@ -43,13 +43,21 @@ def load_dimensions(transformed):
 
     print("\nDimensions Loaded Successfully!")
 
+
 def load_fact_commodity_prices(datasets):
 
     engine = get_engine()
 
+    with engine.begin() as conn:
+        conn.execute(
+            text("TRUNCATE TABLE fact_commodity_prices RESTART IDENTITY")
+        )
+
     fact_df = datasets["commodity_prices_supply_chain"].copy()
 
-    fact_df["date"] = pd.to_datetime(fact_df["date"])
+    fact_df["date"] = pd.to_datetime(
+        fact_df["date"]
+    )
 
     fact_df.to_sql(
         "fact_commodity_prices",
@@ -62,9 +70,15 @@ def load_fact_commodity_prices(datasets):
         f"\nLoaded {len(fact_df)} rows into fact_commodity_prices"
     )
 
+
 def load_fact_shipping_rates(datasets):
 
     engine = get_engine()
+
+    with engine.begin() as conn:
+        conn.execute(
+            text("TRUNCATE TABLE fact_shipping_rates RESTART IDENTITY")
+        )
 
     fact_df = datasets["shipping_rates"].copy()
 
@@ -88,6 +102,11 @@ def load_fact_port_congestion(datasets):
 
     engine = get_engine()
 
+    with engine.begin() as conn:
+        conn.execute(
+            text("TRUNCATE TABLE fact_port_congestion RESTART IDENTITY")
+        )
+
     fact_df = datasets["port_congestion"].copy()
 
     fact_df["week_start"] = pd.to_datetime(
@@ -105,13 +124,18 @@ def load_fact_port_congestion(datasets):
         f"Loaded {len(fact_df)} rows into fact_port_congestion."
     )
 
+
 def load_fact_trade_flows(datasets):
 
     engine = get_engine()
 
+    with engine.begin() as conn:
+        conn.execute(
+            text("TRUNCATE TABLE fact_trade_flows RESTART IDENTITY")
+        )
+
     fact_df = datasets["trade_flows"].copy()
 
-    # Convert integer flags to booleans
     fact_df["trade_active"] = (
         fact_df["trade_active"]
         .astype(int)
@@ -135,9 +159,15 @@ def load_fact_trade_flows(datasets):
         f"Loaded {len(fact_df)} rows into fact_trade_flows."
     )
 
+
 def load_fact_tariff_timeline(datasets):
 
     engine = get_engine()
+
+    with engine.begin() as conn:
+        conn.execute(
+            text("TRUNCATE TABLE fact_tariff_timeline RESTART IDENTITY")
+        )
 
     fact_df = datasets["tariff_timeline"].copy()
 
@@ -169,9 +199,15 @@ def load_fact_tariff_timeline(datasets):
         f"Loaded {len(fact_df)} rows into fact_tariff_timeline."
     )
 
+
 def load_fact_disruption_events(datasets):
 
     engine = get_engine()
+
+    with engine.begin() as conn:
+        conn.execute(
+            text("TRUNCATE TABLE fact_disruption_events RESTART IDENTITY")
+        )
 
     fact_df = datasets["disruption_events"].copy()
 
@@ -202,9 +238,15 @@ def load_fact_disruption_events(datasets):
         f"Loaded {len(fact_df)} rows into fact_disruption_events."
     )
 
+
 def load_fact_industry_exposure(datasets):
 
     engine = get_engine()
+
+    with engine.begin() as conn:
+        conn.execute(
+            text("TRUNCATE TABLE fact_industry_exposure RESTART IDENTITY")
+        )
 
     fact_df = datasets["industry_exposure"].copy()
 
